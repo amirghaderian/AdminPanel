@@ -216,12 +216,7 @@ function MainLayout({ children }: { children: ReactNode }) {
 
       {/* Sidebar */}
       <div className="pt-16 flex flex-1">
-        <div
-          initial={{ x: isMobile() ? -240 : 0 }}
-          animate={{ x: sidebarOpen ? 0 : -240 }}
-          transition={{ duration: 0.3 }}
-          className="w-60 bg-card border-r border-border fixed left-0 bottom-0 top-16 z-20 overflow-y-auto"
-        >
+        <div className="w-60 bg-card border-r border-border fixed left-0 bottom-0 top-16 z-20 overflow-y-auto">
           <div className="p-4">
             {isMobile() && (
               <Button
