@@ -118,3 +118,12 @@
     @apply bg-background text-foreground;
   }
 }
+@font-face {
+  font-family: "vasir";
+  src: url("../public/fonts/Vazirmatn-Medium.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+body {
+  font-family: "vasir", sans-serif;
+}
