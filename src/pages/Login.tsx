@@ -1,4 +1,3 @@
-// src/pages/Login.tsx
 import { Eye, EyeOff, Mail } from "lucide-react";
 import { useState } from "react";
 import { useForm } from "react-hook-form";

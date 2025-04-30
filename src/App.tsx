@@ -7,7 +7,6 @@ import {
   useLocation,
   useNavigate,
 } from "react-router-dom";
-import { motion } from "framer-motion";
 import {
   Home,
   Bell,
@@ -31,10 +30,16 @@ import {
   Mail,
   MessageSquare,
   ShoppingCart,
-  Layers,
   HelpCircle,
   AlertTriangle,
   XCircle,
+  Share2,
+  CreditCard,
+  Smartphone,
+  Globe,
+  Eye,
+  Pencil,
+  Trash2,
 } from "lucide-react";
 import {
   Button,
@@ -68,7 +73,7 @@ import {
   AlertTitle,
   Switch,
 } from "./components";
-
+import { Login } from "./pages";
 // Theme Context
 type Theme = "light" | "dark" | "system";
 
@@ -247,81 +252,89 @@ function MainLayout({ children }: { children: React.ReactNode }) {
   }, [location.pathname]);
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Navbar */}
-      <header className="bg-background border-b border-border fixed top-0 right-0 left-0 z-30 flex flex-col">
+    <div dir="rtl" className="min-h-screen bg-background flex flex-col">
+      <header
+        dir="rtl"
+        className="bg-background border-b border-border fixed top-0 inset-x-0 z-30 flex flex-col"
+      >
+        {/* Top section */}
         <div className="flex items-center justify-between h-16 px-4">
-          <div className="flex items-center">
+          {/* Right - logo and menu toggle */}
+          <div className="flex items-center gap-2">
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden mr-2"
+              className="md:hidden"
               onClick={() => setSidebarOpen(!sidebarOpen)}
             >
               <Menu className="h-5 w-5" />
             </Button>
+
             <Link
               to="/"
               className="text-xl font-bold text-primary hidden md:block"
             >
-              AdminDash
+              داشبورد ادمین
             </Link>
           </div>
 
+          {/* Center - search box */}
           <div className="flex-1 max-w-md mx-4 hidden md:block">
             <div className="relative">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
                 type="search"
-                placeholder="Search..."
-                className="w-full pl-8 bg-background"
+                placeholder="جستجو..."
+                className="w-full pr-8 bg-background text-right"
               />
             </div>
           </div>
 
+          {/* Left - theme, notifications, profile */}
           <div className="flex items-center gap-2">
             <ThemeToggle />
 
             <Button variant="ghost" size="icon" className="relative">
               <Bell className="h-5 w-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-destructive rounded-full"></span>
+              <span className="absolute top-1 left-1 w-2 h-2 bg-destructive rounded-full" />
             </Button>
 
+            {/* User profile dropdown */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" className="flex items-center gap-2">
                   <Avatar className="h-8 w-8">
                     <AvatarImage src="https://admindash-tj3nu2jz.on.adaptive.ai/cdn/ccjWZpG7chtkCEnYaYwTdiXpE8EmwbjF.png" />
-                    <AvatarFallback>AD</AvatarFallback>
+                    <AvatarFallback>ادمین</AvatarFallback>
                   </Avatar>
-                  <span className="hidden md:inline-block">Admin User</span>
+                  <span className="hidden md:inline-block">کاربر ادمین</span>
                   <ChevronDown className="h-4 w-4" />
                 </Button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuContent align="start">
+                <DropdownMenuLabel>حساب کاربری</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  Profile
+                  <User className="ml-2 h-4 w-4" />
+                  پروفایل
                 </DropdownMenuItem>
                 <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  Settings
+                  <User className="ml-2 h-4 w-4" />
+                  تنظیمات
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
+                  <LogOut className="ml-2 h-4 w-4" />
+                  خروج
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
         </div>
 
-        {/* Tab Bar */}
+        {/* Tab bar section */}
         {openTabs.length > 0 && (
-          <div className="border-t border-border overflow-x-auto">
+          <div className="border-t border-border overflow-x-auto scrollbar-thin scrollbar-thumb-muted scrollbar-track-transparent">
             <div className="flex h-10">
               {openTabs.map((tab) => (
                 <div
@@ -330,18 +343,23 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                     setActiveTab(tab.id);
                     navigate(tab.path);
                   }}
-                  className={`flex items-center px-4 py-2 border-r border-border cursor-pointer min-w-[120px] max-w-[200px] ${
+                  className={`flex items-center px-4 py-2 border-l border-border cursor-pointer min-w-[120px] max-w-[200px] whitespace-nowrap ${
                     activeTab === tab.id ? "bg-secondary" : "hover:bg-muted"
                   }`}
                 >
                   <div className="flex items-center gap-2 w-full">
                     <div className="flex-shrink-0">{tab.icon}</div>
-                    <div className="truncate flex-1">{tab.title}</div>
+                    <div className="truncate flex-1 text-right">
+                      {tab.title}
+                    </div>
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="h-5 w-5 ml-1 opacity-60 hover:opacity-100"
-                      onClick={(e) => closeTab(e, tab.id)}
+                      className="h-5 w-5 mr-1 opacity-60 hover:opacity-100"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        closeTab(e, tab.id);
+                      }}
                     >
                       <XCircle className="h-4 w-4" />
                     </Button>
@@ -355,11 +373,8 @@ function MainLayout({ children }: { children: React.ReactNode }) {
 
       {/* Sidebar */}
       <div className={`pt-${openTabs.length > 0 ? "26" : "16"} flex flex-1`}>
-        <motion.aside
-          initial={{ x: isMobile() ? -240 : 0 }}
-          animate={{ x: sidebarOpen ? 0 : -240 }}
-          transition={{ duration: 0.3 }}
-          className={`w-60 bg-card border-r border-border fixed left-0 bottom-0 ${
+        <div
+          className={`w-60 bg-card border-l border-border fixed right-0 bottom-0 ${
             openTabs.length > 0 ? "top-26" : "top-16"
           } z-20 overflow-y-auto`}
         >
@@ -376,36 +391,35 @@ function MainLayout({ children }: { children: React.ReactNode }) {
             )}
 
             <nav className="space-y-1 mt-4">
-              {/* Dashboard */}
+              {/* داشبورد */}
               <div onClick={() => navigate("/")}>
                 <Button
                   variant={location.pathname === "/" ? "secondary" : "ghost"}
                   className="w-full justify-start"
                 >
                   <Home className="mr-2 h-4 w-4" />
-                  Dashboard
+                  داشبورد
                 </Button>
               </div>
 
-              {/* Analytics Menu */}
+              {/* مدیریت کانال‌ها */}
               <div>
                 <Button
                   variant="ghost"
                   className="w-full justify-between group"
-                  onClick={() => toggleMenu("analytics")}
+                  onClick={() => toggleMenu("channels")}
                 >
                   <div className="flex items-center">
-                    <BarChart className="mr-2 h-4 w-4" />
-                    <span>Analytics</span>
+                    <Share2 className="mr-2 h-4 w-4" />
+                    مدیریت کانال‌ها
                   </div>
-                  {openMenus.includes("analytics") ? (
-                    <ChevronDown className="h-4 w-4" />
+                  {openMenus.includes("channels") ? (
+                    <ChevronDown />
                   ) : (
-                    <ChevronRight className="h-4 w-4" />
+                    <ChevronRight />
                   )}
                 </Button>
-
-                {openMenus.includes("analytics") && (
+                {openMenus.includes("channels") && (
                   <div className="ml-6 mt-1 space-y-1">
                     <Button
                       variant="ghost"
@@ -413,15 +427,15 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                       className="w-full justify-start"
                       onClick={() =>
                         openTab({
-                          id: "performance",
-                          title: "Performance",
-                          path: "/analytics/performance",
-                          icon: <BarChart className="h-4 w-4" />,
+                          id: "atm",
+                          title: "دستگاه‌های خودپرداز",
+                          path: "/channels/atm",
+                          icon: <CreditCard className="h-4 w-4" />,
                         })
                       }
                     >
-                      <BarChart className="mr-2 h-4 w-4" />
-                      Performance
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      دستگاه‌های خودپرداز (ATM)
                     </Button>
                     <Button
                       variant="ghost"
@@ -429,208 +443,128 @@ function MainLayout({ children }: { children: React.ReactNode }) {
                       className="w-full justify-start"
                       onClick={() =>
                         openTab({
-                          id: "statistics",
-                          title: "Statistics",
-                          path: "/analytics/statistics",
-                          icon: <PieChart className="h-4 w-4" />,
+                          id: "pos",
+                          title: "پایانه‌های فروش",
+                          path: "/channels/pos",
+                          icon: <ShoppingCart className="h-4 w-4" />,
                         })
                       }
                     >
-                      <PieChart className="mr-2 h-4 w-4" />
-                      Statistics
+                      <ShoppingCart className="mr-2 h-4 w-4" />
+                      پایانه‌های فروش (POS)
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() =>
+                        openTab({
+                          id: "mobilebank",
+                          title: "بانکداری موبایلی",
+                          path: "/channels/mobilebank",
+                          icon: <Smartphone className="h-4 w-4" />,
+                        })
+                      }
+                    >
+                      <Smartphone className="mr-2 h-4 w-4" />
+                      بانکداری موبایلی
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="w-full justify-start"
+                      onClick={() =>
+                        openTab({
+                          id: "internetbank",
+                          title: "بانکداری اینترنتی",
+                          path: "/channels/internetbank",
+                          icon: <Globe className="h-4 w-4" />,
+                        })
+                      }
+                    >
+                      <Globe className="mr-2 h-4 w-4" />
+                      بانکداری اینترنتی
                     </Button>
                   </div>
                 )}
               </div>
 
-              {/* Users */}
+              {/* گزارش‌ها */}
+              <Button
+                variant="ghost"
+                className="w-full justify-start"
+                onClick={() =>
+                  openTab({
+                    id: "reports",
+                    title: "گزارش‌ها",
+                    path: "/reports",
+                    icon: <BarChart className="h-4 w-4" />,
+                  })
+                }
+              >
+                <BarChart className="mr-2 h-4 w-4" />
+                گزارش‌ها
+              </Button>
+
+              {/* کاربران */}
               <Button
                 variant="ghost"
                 className="w-full justify-start"
                 onClick={() =>
                   openTab({
                     id: "users",
-                    title: "Users",
+                    title: "کاربران",
                     path: "/users",
                     icon: <Users className="h-4 w-4" />,
                   })
                 }
               >
                 <Users className="mr-2 h-4 w-4" />
-                Users
+                کاربران
               </Button>
 
-              {/* Calendar */}
-              <Button
-                variant="ghost"
-                className="w-full justify-start"
-                onClick={() =>
-                  openTab({
-                    id: "calendar",
-                    title: "Calendar",
-                    path: "/calendar",
-                    icon: <Calendar className="h-4 w-4" />,
-                  })
-                }
-              >
-                <Calendar className="mr-2 h-4 w-4" />
-                Calendar
-              </Button>
-
-              {/* Communication Menu */}
-              <div>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-between group"
-                  onClick={() => toggleMenu("communication")}
-                >
-                  <div className="flex items-center">
-                    <Mail className="mr-2 h-4 w-4" />
-                    <span>Communication</span>
-                  </div>
-                  {openMenus.includes("communication") ? (
-                    <ChevronDown className="h-4 w-4" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4" />
-                  )}
-                </Button>
-
-                {openMenus.includes("communication") && (
-                  <div className="ml-6 mt-1 space-y-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={() =>
-                        openTab({
-                          id: "email",
-                          title: "Email",
-                          path: "/communication/email",
-                          icon: <Mail className="h-4 w-4" />,
-                        })
-                      }
-                    >
-                      <Mail className="mr-2 h-4 w-4" />
-                      Email
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={() =>
-                        openTab({
-                          id: "chat",
-                          title: "Chat",
-                          path: "/communication/chat",
-                          icon: <MessageSquare className="h-4 w-4" />,
-                        })
-                      }
-                    >
-                      <MessageSquare className="mr-2 h-4 w-4" />
-                      Chat
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              {/* E-commerce Menu */}
-              <div>
-                <Button
-                  variant="ghost"
-                  className="w-full justify-between group"
-                  onClick={() => toggleMenu("ecommerce")}
-                >
-                  <div className="flex items-center">
-                    <ShoppingCart className="mr-2 h-4 w-4" />
-                    <span>E-commerce</span>
-                  </div>
-                  {openMenus.includes("ecommerce") ? (
-                    <ChevronDown className="h-4 w-4" />
-                  ) : (
-                    <ChevronRight className="h-4 w-4" />
-                  )}
-                </Button>
-
-                {openMenus.includes("ecommerce") && (
-                  <div className="ml-6 mt-1 space-y-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={() =>
-                        openTab({
-                          id: "products",
-                          title: "Products",
-                          path: "/ecommerce/products",
-                          icon: <Layers className="h-4 w-4" />,
-                        })
-                      }
-                    >
-                      <Layers className="mr-2 h-4 w-4" />
-                      Products
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="w-full justify-start"
-                      onClick={() =>
-                        openTab({
-                          id: "orders",
-                          title: "Orders",
-                          path: "/ecommerce/orders",
-                          icon: <ShoppingCart className="h-4 w-4" />,
-                        })
-                      }
-                    >
-                      <ShoppingCart className="mr-2 h-4 w-4" />
-                      Orders
-                    </Button>
-                  </div>
-                )}
-              </div>
-
-              {/* Settings */}
+              {/* پیکربندی */}
               <Button
                 variant="ghost"
                 className="w-full justify-start"
                 onClick={() =>
                   openTab({
                     id: "settings",
-                    title: "Settings",
+                    title: "تنظیمات",
                     path: "/settings",
                     icon: <Settings className="h-4 w-4" />,
                   })
                 }
               >
                 <Settings className="mr-2 h-4 w-4" />
-                Settings
+                تنظیمات
               </Button>
 
-              {/* Help */}
+              {/* پشتیبانی */}
               <Button
                 variant="ghost"
                 className="w-full justify-start"
                 onClick={() =>
                   openTab({
-                    id: "help",
-                    title: "Help",
-                    path: "/help",
+                    id: "support",
+                    title: "پشتیبانی",
+                    path: "/support",
                     icon: <HelpCircle className="h-4 w-4" />,
                   })
                 }
               >
                 <HelpCircle className="mr-2 h-4 w-4" />
-                Help
+                پشتیبانی
               </Button>
             </nav>
           </div>
-        </motion.aside>
+        </div>
 
         {/* Main Content */}
         <main
           className={`flex-1 p-6 transition-all duration-300 ${
             openTabs.length > 0 ? "pt-28" : "pt-20"
-          } ${sidebarOpen ? "md:ml-60" : "ml-0"}`}
+          } ${sidebarOpen ? "md:mr-60" : "mr-0"}`}
         >
           {children}
         </main>
@@ -640,87 +574,80 @@ function MainLayout({ children }: { children: React.ReactNode }) {
 }
 
 // Dashboard Page with static data
+
 function DashboardPage() {
-  // Hardcoded dashboard data
   const dashboardData = {
     metrics: {
-      totalUsers: 6,
-      activeUsers: 5,
-      adminUsers: 1,
-      pendingTasks: 0,
+      totalChannels: 12,
+      activeChannels: 9,
+      adminUsers: 3,
+      pendingApprovals: 2,
     },
     weeklyActivity: [
-      { date: "2025-04-22", value: 65 },
-      { date: "2025-04-23", value: 45 },
-      { date: "2025-04-24", value: 75 },
-      { date: "2025-04-25", value: 55 },
-      { date: "2025-04-26", value: 25 },
+      { date: "2025-04-22", value: 70 },
+      { date: "2025-04-23", value: 40 },
+      { date: "2025-04-24", value: 65 },
+      { date: "2025-04-25", value: 50 },
+      { date: "2025-04-26", value: 20 },
       { date: "2025-04-27", value: 30 },
-      { date: "2025-04-28", value: 80 },
+      { date: "2025-04-28", value: 90 },
     ],
     recentActivities: [
       {
         id: "1",
-        userId: "system",
-        action: "login",
-        description: "Admin user logged in",
+        userId: "admin",
+        action: "create",
+        description: "کانال جدید ایجاد شد",
         createdAt: "2025-04-28T10:30:00Z",
       },
       {
         id: "2",
-        userId: "system",
-        action: "create",
-        description: "New user account created",
+        userId: "admin",
+        action: "update",
+        description: "ویرایش اطلاعات کانال",
         createdAt: "2025-04-27T14:45:00Z",
       },
       {
         id: "3",
-        userId: "system",
-        action: "update",
-        description: "System settings updated",
+        userId: "admin",
+        action: "approve",
+        description: "تأیید درخواست عضویت",
         createdAt: "2025-04-26T09:15:00Z",
       },
       {
         id: "4",
-        userId: "system",
+        userId: "admin",
         action: "delete",
-        description: "User account removed",
+        description: "حذف یک کانال",
         createdAt: "2025-04-25T16:20:00Z",
-      },
-      {
-        id: "5",
-        userId: "system",
-        action: "export",
-        description: "Data exported to CSV",
-        createdAt: "2025-04-24T11:10:00Z",
       },
     ],
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold">Dashboard</h1>
+    <div dir="ltr" className="space-y-6 text-right">
+      <div className="flex flex-row-reverse items-center justify-between">
+        <h1 className="text-2xl font-bold">داشبورد مدیریت کانال</h1>
         <Button>
-          <Plus className="mr-2 h-4 w-4" />
-          New Report
+          <Plus className="ml-2 h-4 w-4" />
+          کانال جدید
         </Button>
       </div>
 
-      {/* Metric Cards */}
+      {/* کارت‌های آمار */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Total Users
+              تعداد کل کانال‌ها
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {dashboardData?.metrics.totalUsers}
+              {dashboardData?.metrics.totalChannels}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              <span className="text-green-500">+12%</span> from last month
+              <span className="text-green-500">+5٪</span> نسبت به ماه قبل
             </p>
           </CardContent>
         </Card>
@@ -728,15 +655,15 @@ function DashboardPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Active Users
+              کانال‌های فعال
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {dashboardData?.metrics.activeUsers}
+              {dashboardData?.metrics.activeChannels}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              <span className="text-green-500">+5%</span> from last month
+              <span className="text-green-500">+3٪</span> نسبت به ماه قبل
             </p>
           </CardContent>
         </Card>
@@ -744,47 +671,45 @@ function DashboardPage() {
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Admin Users
+              تعداد مدیران
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
               {dashboardData?.metrics.adminUsers}
             </div>
-            <p className="text-xs text-muted-foreground mt-1">
-              <span className="text-muted-foreground">No change</span> from last
-              month
-            </p>
+            <p className="text-xs text-muted-foreground mt-1">بدون تغییر</p>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
-              Pending Tasks
+              در انتظار تأیید
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">
-              {dashboardData?.metrics.pendingTasks}
+              {dashboardData?.metrics.pendingApprovals}
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              <span className="text-red-500">+2</span> from yesterday
+              <span className="text-red-500">+2</span> نسبت به دیروز
             </p>
           </CardContent>
         </Card>
       </div>
 
-      {/* Activity Chart */}
+      {/* نمودار هفتگی */}
       <Card>
         <CardHeader>
-          <CardTitle>Weekly Activity</CardTitle>
-          <CardDescription>User activity over the past 7 days</CardDescription>
+          <CardTitle>فعالیت هفتگی</CardTitle>
+          <CardDescription>
+            میزان فعالیت کانال‌ها در ۷ روز گذشته
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="h-[200px] w-full">
-            {/* Simple chart visualization */}
-            <div className="flex items-end justify-between h-[160px] w-full">
+            <div className="flex flex-row-reverse items-end justify-between h-[160px] w-full">
               {dashboardData?.weeklyActivity.map((day, i) => (
                 <div key={i} className="flex flex-col items-center">
                   <div
@@ -793,7 +718,7 @@ function DashboardPage() {
                   ></div>
                   <span className="text-xs mt-2 text-muted-foreground">
                     {day.date
-                      ? new Date(day.date).toLocaleDateString("en-US", {
+                      ? new Date(day.date).toLocaleDateString("fa-IR", {
                           weekday: "short",
                         })
                       : ""}
@@ -805,23 +730,25 @@ function DashboardPage() {
         </CardContent>
       </Card>
 
-      {/* Recent Activity */}
+      {/* فعالیت‌های اخیر */}
       <Card>
         <CardHeader>
-          <CardTitle>Recent Activity</CardTitle>
-          <CardDescription>Latest actions in the system</CardDescription>
+          <CardTitle>فعالیت‌های اخیر</CardTitle>
+          <CardDescription>
+            آخرین اقدامات انجام‌شده روی کانال‌ها
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
             {dashboardData?.recentActivities.map((activity, i) => (
-              <div key={i} className="flex items-start gap-4">
+              <div key={i} className="flex items-start gap-4 flex-row-reverse">
                 <div className="bg-muted rounded-full p-2">
                   <Activity className="h-4 w-4" />
                 </div>
                 <div>
                   <p className="font-medium">{activity.description}</p>
                   <p className="text-sm text-muted-foreground">
-                    {new Date(activity.createdAt).toLocaleString()}
+                    {new Date(activity.createdAt).toLocaleString("fa-IR")}
                   </p>
                 </div>
               </div>
@@ -830,7 +757,7 @@ function DashboardPage() {
         </CardContent>
         <CardFooter>
           <Button variant="outline" className="w-full">
-            View All Activity
+            مشاهده همه فعالیت‌ها
           </Button>
         </CardFooter>
       </Card>
@@ -838,67 +765,88 @@ function DashboardPage() {
   );
 }
 
-// Placeholder pages for the new routes
 function UsersPage() {
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Users</h1>
+    <div className="space-y-6" dir="rtl">
+      <h1 className="text-2xl font-bold">کاربران</h1>
       <Card>
         <CardHeader>
-          <CardTitle>User Management</CardTitle>
-          <CardDescription>View and manage system users</CardDescription>
+          <CardTitle>مدیریت کاربران</CardTitle>
+          <CardDescription>مشاهده و مدیریت کاربران سیستم</CardDescription>
         </CardHeader>
         <CardContent>
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Actions</TableHead>
+                <TableHead className="text-center">نام</TableHead>
+                <TableHead className="text-center">ایمیل</TableHead>
+                <TableHead className="text-center">نقش</TableHead>
+                <TableHead className="text-center">وضعیت</TableHead>
+                <TableHead className="text-center">عملیات</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
-              <TableRow>
-                <TableCell>John Doe</TableCell>
-                <TableCell>john@example.com</TableCell>
-                <TableCell>Admin</TableCell>
-                <TableCell>
-                  <Badge className="bg-green-500 text-white">Active</Badge>
-                </TableCell>
-                <TableCell>
-                  <Button variant="ghost" size="sm">
-                    Edit
-                  </Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Jane Smith</TableCell>
-                <TableCell>jane@example.com</TableCell>
-                <TableCell>User</TableCell>
-                <TableCell>
-                  <Badge className="bg-green-500 text-white">Active</Badge>
-                </TableCell>
-                <TableCell>
-                  <Button variant="ghost" size="sm">
-                    Edit
-                  </Button>
-                </TableCell>
-              </TableRow>
-              <TableRow>
-                <TableCell>Bob Johnson</TableCell>
-                <TableCell>bob@example.com</TableCell>
-                <TableCell>User</TableCell>
-                <TableCell>
-                  <Badge className="bg-amber-500">Pending</Badge>
-                </TableCell>
-                <TableCell>
-                  <Button variant="ghost" size="sm">
-                    Edit
-                  </Button>
-                </TableCell>
-              </TableRow>
+              {[
+                {
+                  name: "علی مرادی",
+                  email: "ali@example.com",
+                  role: "مدیر",
+                  status: "فعال",
+                  statusColor: "bg-green-500",
+                },
+                {
+                  name: "زهرا احمدی",
+                  email: "zahra@example.com",
+                  role: "کاربر",
+                  status: "غیرفعال",
+                  statusColor: "bg-red-500",
+                },
+                {
+                  name: "مهدی رضایی",
+                  email: "mehdi@example.com",
+                  role: "کاربر",
+                  status: "در انتظار",
+                  statusColor: "bg-amber-500",
+                },
+              ].map((user, index) => (
+                <TableRow key={index}>
+                  <TableCell className="text-center">{user.name}</TableCell>
+                  <TableCell className="text-center">{user.email}</TableCell>
+                  <TableCell className="text-center">{user.role}</TableCell>
+                  <TableCell className="text-center">
+                    <Badge
+                      className={`${user.statusColor} text-white inline-block`}
+                      style={{
+                        minWidth: "70px",
+                        display: "inline-block",
+                        textAlign: "center",
+                      }}
+                    >
+                      {user.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-center space-x-2 space-x-reverse">
+                    <button
+                      title="مشاهده"
+                      className="text-blue-600 hover:text-blue-800 mx-1"
+                    >
+                      <Eye size={18} />
+                    </button>
+                    <button
+                      title="ویرایش"
+                      className="text-green-600 hover:text-green-800 mx-1"
+                    >
+                      <Pencil size={18} />
+                    </button>
+                    <button
+                      title="حذف"
+                      className="text-red-600 hover:text-red-800 mx-1"
+                    >
+                      <Trash2 size={18} />
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </CardContent>
@@ -908,9 +856,8 @@ function UsersPage() {
 }
 
 function SettingsPage() {
-  // State for form fields
   const [settings, setSettings] = useState({
-    siteName: "AdminDash",
+    siteName: "ادمین‌داش",
     siteUrl: "https://admindash.example.com",
     maintenance: false,
     smtpHost: "smtp.example.com",
@@ -918,12 +865,10 @@ function SettingsPage() {
     smtpSecure: true,
   });
 
-  // State for save confirmation
   const [saveStatus, setSaveStatus] = useState<null | "success" | "error">(
     null
   );
 
-  // Handle input changes
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value, type, checked } = e.target;
     setSettings((prev) => ({
@@ -932,25 +877,21 @@ function SettingsPage() {
     }));
   };
 
-  // Handle form submission
   const handleSave = () => {
-    // In a real app, this would save to an API
-    console.log("Saving settings:", settings);
+    console.log("در حال ذخیره تنظیمات:", settings);
     setSaveStatus("success");
-
-    // Clear success message after 3 seconds
     setTimeout(() => {
       setSaveStatus(null);
     }, 3000);
   };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Settings</h1>
+    <div className="space-y-6" dir="rtl">
+      <h1 className="text-2xl font-bold">تنظیمات</h1>
       <Card>
         <CardHeader>
-          <CardTitle>System Settings</CardTitle>
-          <CardDescription>Configure your application settings</CardDescription>
+          <CardTitle>تنظیمات سیستم</CardTitle>
+          <CardDescription>پیکربندی تنظیمات برنامه</CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
           {saveStatus === "success" && (
@@ -969,21 +910,21 @@ function SettingsPage() {
                     strokeLinejoin="round"
                     className="text-white"
                   >
-                    <polyline points="20 6 9 17 4 12"></polyline>
+                    <polyline points="20 6 9 17 4 12" />
                   </svg>
                 </div>
                 <AlertTitle className="text-green-800 dark:text-green-300">
-                  Settings saved successfully
+                  تنظیمات با موفقیت ذخیره شد
                 </AlertTitle>
               </div>
             </Alert>
           )}
 
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">General</h3>
+            <h3 className="text-lg font-medium">عمومی</h3>
             <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="siteName">Site Name</Label>
+                <Label htmlFor="siteName">نام سایت</Label>
                 <Input
                   id="siteName"
                   value={settings.siteName}
@@ -991,7 +932,7 @@ function SettingsPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="siteUrl">Site URL</Label>
+                <Label htmlFor="siteUrl">آدرس سایت</Label>
                 <Input
                   id="siteUrl"
                   value={settings.siteUrl}
@@ -1000,10 +941,11 @@ function SettingsPage() {
               </div>
               <div className="flex items-center gap-2">
                 <Label htmlFor="maintenance" className="flex-1">
-                  Maintenance Mode
+                  حالت تعمیرات
                 </Label>
                 <Switch
                   id="maintenance"
+                  dir="ltr"
                   checked={settings.maintenance}
                   onCheckedChange={(checked) => {
                     setSettings((prev) => ({ ...prev, maintenance: checked }));
@@ -1012,12 +954,14 @@ function SettingsPage() {
               </div>
             </div>
           </div>
+
           <Separator />
+
           <div className="space-y-4">
-            <h3 className="text-lg font-medium">Email</h3>
+            <h3 className="text-lg font-medium">ایمیل</h3>
             <div className="grid gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="smtpHost">SMTP Host</Label>
+                <Label htmlFor="smtpHost">میزبان SMTP</Label>
                 <Input
                   id="smtpHost"
                   value={settings.smtpHost}
@@ -1025,20 +969,21 @@ function SettingsPage() {
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="smtpPort">SMTP Port</Label>
+                <Label htmlFor="smtpPort">پورت SMTP</Label>
                 <Input
                   id="smtpPort"
-                  value={settings.smtpPort}
                   type="number"
+                  value={settings.smtpPort}
                   onChange={handleChange}
                 />
               </div>
               <div className="flex items-center gap-2">
                 <Label htmlFor="smtpSecure" className="flex-1">
-                  Use SSL/TLS
+                  استفاده از SSL/TLS
                 </Label>
                 <Switch
                   id="smtpSecure"
+                  dir="ltr"
                   checked={settings.smtpSecure}
                   onCheckedChange={(checked) => {
                     setSettings((prev) => ({ ...prev, smtpSecure: checked }));
@@ -1049,7 +994,7 @@ function SettingsPage() {
           </div>
         </CardContent>
         <CardFooter>
-          <Button onClick={handleSave}>Save Changes</Button>
+          <Button onClick={handleSave}>ذخیره تغییرات</Button>
         </CardFooter>
       </Card>
     </div>
@@ -1416,6 +1361,7 @@ export default function App() {
       <Router>
         <MainLayout>
           <Routes>
+            <Route path="/login" element={<Login />} />
             <Route path="/" element={<DashboardPage />} />
             <Route path="/users" element={<UsersPage />} />
             <Route path="/settings" element={<SettingsPage />} />
